@@ -1,0 +1,9 @@
+---
+title: "Biofilm thickness"
+---
+
+This is some of the code and plots from: 
+Carolina Suarez, Maria Piculell, Oskar Modin, Silke Langenheder, Frank Persson, Malte Hermansson. 2019. **Thickness determines microbial community structure and function in nitrifying biofilms via deterministic assembly**. Scientific Reports. 9:5110
+
+https://www.nature.com/articles/s41598-019-41542-1
+

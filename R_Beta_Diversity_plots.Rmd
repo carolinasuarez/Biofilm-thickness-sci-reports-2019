@@ -1,13 +1,5 @@
 ---
 title: "Beta diversity"
-knit: (function(input_file, encoding) {
-  out_dir <- 'docs';
-  rmarkdown::render(input_file,
- encoding=encoding,
- output_file=file.path(dirname(input_file), out_dir, 'Beta_diversity.html'))})
-output:
-  html_document:
-    df_print: paged
 ---
 
 This is the code for Figures 2 and 3 from *Suarez et al. 2019. Thickness determines microbial community structure and function in nitrifying biofilms via deterministic assembly. Scientific Reports. 9:5110*
@@ -114,6 +106,8 @@ t.test(Measurement ~ Carrier, data = filter(Z_div, Metric=="E1"))$p.value
 
 ##Beta-diversity
 We use the baselga framework. We estimate **pairwise** beta-diversity, and its components.
+ 
+Please see Baselga 2010. **Partitioning the turnover and nestedness components of beta diversity**
 ```{r}
 library(betapart)
 OTUS.vegan_bin <- as.matrix(OTUS.vegan)
@@ -148,9 +142,9 @@ caro.ord.PCoA <- function(Source=dr, Distance.matrix) {
         axis.ticks = element_blank(),
         panel.grid = element_blank(),
         axis.text = element_text(size =7, color = "black"), 
-        axis.title = element_blank(), #For publication I uncomment this one
-        axis.text.x = element_blank(), #For publication I uncomment this one
-        axis.text.y = element_blank(), #For publication I uncomment this one
+        axis.title = element_blank(), 
+        axis.text.x = element_blank(), 
+        axis.text.y = element_blank(),
         legend.title = element_blank(),
         legend.text = element_text(size =8, color = "black"),
        legend.position="right") +
