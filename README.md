@@ -3,11 +3,9 @@
  
  This is our R code for figures 2 and 3: https://carolinasuarez.github.io/Biofilm-thickness-sci-reports-2019/R_Beta_Diversity_plots.html
 
-##Other stuff
+## Other stuff
 * [zotutable_otu_final.csv](/zotutable_otu_final.csv). A SV table created with UNOISE. We sequenced the V4 region of the 16S rRNA gene with primers 515F and 806R
 * [zotutable_tax_final.csv](/zotutable_tax_final.csv). Taxonomy table
-* [metadata.txt](/metadata.txt).
+* [metadata.txt](/metadata.txt). Metadata file
 * [R_Beta_Diversity_plots.Rmd](/R_Beta_Diversity_plots.Rmd). R code
-
- 
 
