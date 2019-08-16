@@ -1,0 +1,11 @@
+name: "Biofilm-thickness-sci-reports-2019"
+output_dir: "docs"
+navbar:
+  title: "Biofilm thickness"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Beta diversity"
+      href: R_Beta_Diversity_plots.html
+output:
+  html_document:

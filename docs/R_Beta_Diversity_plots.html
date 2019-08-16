@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Beta diversity</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Biofilm thickness</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="R_Beta_Diversity_plots.html">Beta diversity</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Beta diversity</h1>
+
+</div>
+
+
+<p>This is the code for Figures 2 and 3 from <em>Suarez et al. 2019. Thickness determines microbial community structure and function in nitrifying biofilms via deterministic assembly. Scientific Reports. 9:5110</em></p>
+<div id="stuff-we-need" class="section level1">
+<h1>Stuff we need</h1>
+<pre class="r"><code>library(phyloseq)
+library(vegan)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(tibble)</code></pre>
+<p>I load the SV and tax table. SVs shorter than 200bp were excluded prior to analysis.</p>
+<pre class="r"><code>UNOISE_OTU_table &lt;- read.csv(&quot;zotutable_otu_final.csv&quot;, header=TRUE, row.names = 1)
+UNOISE_tax_table &lt;- as.matrix(read.csv(&quot;zotutable_tax_final.csv&quot;, header=TRUE, row.names = 1, na.strings=&quot;&quot;))
+metadata = read.table(&quot;metadata.txt&quot;, sep=&quot;\t&quot;, header=TRUE, row.names=1) #load the metadata
+
+#Phyloseq stuff
+d &lt;- phyloseq(otu_table(UNOISE_OTU_table, taxa_are_rows = TRUE),
+              tax_table(UNOISE_tax_table),
+              sample_data(metadata))</code></pre>
+</div>
+<div id="data-anaylisis" class="section level1">
+<h1>Data anaylisis</h1>
+<p><strong>Subsampling to even depth</strong> We are comparing samples with different sequencing depht, so subsampling to even depth (rarefy) might be a good idea. However some people think that subsampling is bad.</p>
+<pre class="r"><code>dr &lt;- rarefy_even_depth(physeq = d,
+                         rngseed = 712)</code></pre>
+<pre><code>## `set.seed(712)` was used to initialize repeatable random subsampling.</code></pre>
+<pre><code>## Please record this for your records so others can reproduce.</code></pre>
+<pre><code>## Try `set.seed(712); .Random.seed` for the full vector</code></pre>
+<pre><code>## ...</code></pre>
+<pre><code>## 104OTUs were removed because they are no longer 
+## present in any sample after random subsampling</code></pre>
+<pre><code>## ...</code></pre>
+<pre class="r"><code>#This function exports the OTU table to Vegan or others
+veganotu = function(physeq) {
+    OTU = otu_table(physeq)
+    if (taxa_are_rows(OTU)) {
+        OTU = t(OTU)
+    }
+    return(as(OTU, &quot;matrix&quot;))
+}
+OTUS.vegan &lt;- veganotu(dr) #The subsampled OTU table outside phyloseq. I will use this later</code></pre>
+<div id="alpha-diversity" class="section level2">
+<h2>Alpha-diversity</h2>
+<pre class="r"><code>#I get some alpha diversity indicators with Phyloseq
+Z_div = estimate_richness(dr, measures=c(&quot;Observed&quot;, &quot;Shannon&quot;))
+
+Z_div = Z_div %&gt;%
+  rownames_to_column(var=&quot;names&quot;) %&gt;%
+  mutate(Carrier = sample_data(dr)$Carrier) %&gt;% #I add the carrier type
+  mutate(D1 = exp(Shannon)) %&gt;% #True diversity (Effective number of species)
+  mutate(E1 = D1/Observed) %&gt;%
+  select(-Shannon) %&gt;%
+  gather(key=Metric, value=Measurement, c(&quot;Observed&quot;, &quot;D1&quot;, &quot;E1&quot;))</code></pre>
+<p>This is Figure 2A</p>
+<pre class="r"><code>Z_div$Metric &lt;- as.factor(Z_div$Metric)
+Z_div$Metric = factor(Z_div$Metric,levels(Z_div$Metric)[c(3, 1, 2)])
+
+
+alpha_names &lt;- as_labeller(c(
+  `Observed` = &quot;Richness&quot;,
+  `D1` = &quot;Diversity&quot;,
+  `E1` = &quot;Eveness&quot;)) 
+
+ggplot(Z_div, aes(Carrier, Measurement)) +
+  facet_wrap(~ Metric, labeller = alpha_names, scales = &quot;free&quot;) +
+  geom_boxplot(aes(fill=Carrier)) +
+  theme_bw() +
+  theme(axis.text = element_text(colour = &quot;black&quot;, size = 8),
+        axis.title = element_blank(),
+        legend.text = element_text(colour = &quot;black&quot;, size = 8),
+        legend.title = element_blank(),
+      strip.background = element_blank(),
+      legend.position = &quot;none&quot;) +
+  scale_fill_brewer(palette = &quot;Set1&quot;) +
+  expand_limits(y = 0)</code></pre>
+<p><img src="R_Beta_Diversity_plots_files/figure-html/Fig_2A-1.png" width="672" /></p>
+<p><strong>Welch T-test</strong>* P-values</p>
+<p>Observed</p>
+<pre class="r"><code>t.test(Measurement ~ Carrier, data = filter(Z_div, Metric==&quot;Observed&quot;))$p.value</code></pre>
+<pre><code>## [1] 4.193674e-09</code></pre>
+<p>D1</p>
+<pre class="r"><code>t.test(Measurement ~ Carrier, data = filter(Z_div, Metric==&quot;D1&quot;))$p.value</code></pre>
+<pre><code>## [1] 3.95994e-06</code></pre>
+<p>E1</p>
+<pre class="r"><code>t.test(Measurement ~ Carrier, data = filter(Z_div, Metric==&quot;E1&quot;))$p.value</code></pre>
+<pre><code>## [1] 7.472015e-05</code></pre>
+</div>
+<div id="beta-diversity" class="section level2">
+<h2>Beta-diversity</h2>
+<p>We use the baselga framework. We estimate <strong>pairwise</strong> beta-diversity, and its components.</p>
+<p>Please see Baselga 2010. <strong>Partitioning the turnover and nestedness components of beta diversity</strong></p>
+<pre class="r"><code>library(betapart)
+OTUS.vegan_bin &lt;- as.matrix(OTUS.vegan)
+OTUS.vegan_bin[OTUS.vegan_bin &gt; 0] &lt;- 1 #Binary
+
+#Baselga
+beta_core_bin_Z &lt;- betapart.core(OTUS.vegan_bin)
+beta_pair_bin_Z &lt;- beta.pair(beta_core_bin_Z, index.family=&quot;sorensen&quot;)</code></pre>
+<p>Ordination - Simpson index. This is figure 2B</p>
+<pre class="r"><code>#Source: A phyloseq object
+#Distance.matrix: A distance matrix, for example Bray-curtis or Sorensen
+caro.ord.PCoA &lt;- function(Source=dr, Distance.matrix) {
+  
+  ordu = ordinate(Source, &quot;PCoA&quot;, distance=Distance.matrix) #Phyloseq, makes an ordination
+  ordu.data = plot_ordination(Source, ordu, justDF=TRUE) #Data for the Ordination
+  
+  #Here I plot the ordination
+  qr &lt;- ggplot(ordu.data, aes(Axis.1, Axis.2)) +
+  geom_point(size = 3, 
+             alpha=0.7, 
+             aes(shape=factor(Carrier), #My environmental variable is carrier type
+                 fill=factor(Carrier)), 
+             stroke=0.5) +
+  scale_shape_manual(values = c(21, 24)) + #I want shapes also
+  theme_bw() +
+  theme(panel.border = element_rect(colour = &quot;black&quot;),
+        aspect.ratio=1, 
+        axis.ticks = element_blank(),
+        panel.grid = element_blank(),
+        axis.text = element_text(size =7, color = &quot;black&quot;), 
+        axis.title = element_blank(), 
+        axis.text.x = element_blank(), 
+        axis.text.y = element_blank(),
+        legend.title = element_blank(),
+        legend.text = element_text(size =8, color = &quot;black&quot;),
+       legend.position=&quot;right&quot;) +
+  scale_fill_brewer(type = &quot;qual&quot;, palette = &quot;Set1&quot;) #I love colorbrewer
+  return(qr)
+}
+
+#Figure 2B
+caro.ord.PCoA(dr, beta_pair_bin_Z$beta.sor)</code></pre>
+<p><img src="R_Beta_Diversity_plots_files/figure-html/Fig_2B-1.png" width="672" /></p>
+</div>
+<div id="figure-3" class="section level2">
+<h2>Figure 3</h2>
+<pre class="r"><code>#We convert the dist to a matrix
+DIST_TO_MATRIX &lt;- function(Source, Type) {
+  #@Source = a dist object
+  #@Type = a description of the dist matrix
+  library(reshape2)
+  RC_mod &lt;- as.matrix(Source)
+  RC_mod &lt;- melt(RC_mod)[melt(lower.tri(RC_mod))$value,]
+  names(RC_mod) &lt;- c(&quot;c1&quot;, &quot;c2&quot;, &quot;distance&quot;)
+  qr = RC_mod %&gt;%
+    mutate(Carrier=paste(substr(c1, 1, 3), substr(c2, 1, 3), sep=&quot;_&quot;))
+  qr$type &lt;- Type 
+  return(qr)
+  detach(&quot;package:reshape2&quot;, unload=TRUE)
+}
+
+beta_pair_bin_Z.sor &lt;- DIST_TO_MATRIX(beta_pair_bin_Z$beta.sor, &quot;Total&quot;)
+beta_pair_bin_Z.sne &lt;- DIST_TO_MATRIX(beta_pair_bin_Z$beta.sne, &quot;Nestedness&quot;)
+beta_pair_bin_Z.sim &lt;- DIST_TO_MATRIX(beta_pair_bin_Z$beta.sim, &quot;Turnover&quot;)</code></pre>
+<p>This is <strong>figure 3B</strong></p>
+<pre class="r"><code>#We put all together
+beta_pair_bin_Z.all &lt;- beta_pair_bin_Z.sor %&gt;%
+  bind_rows(beta_pair_bin_Z.sne) %&gt;%
+  bind_rows(beta_pair_bin_Z.sim)
+
+#Reorder levels
+#pairwise comparisons
+beta_pair_bin_Z.all$Carrier &lt;- as.factor(beta_pair_bin_Z.all$Carrier)
+beta_pair_bin_Z.all$Carrier = factor(beta_pair_bin_Z.all$Carrier,levels(beta_pair_bin_Z.all$Carrier)[c(2,1,3)])
+#Beta partition
+beta_pair_bin_Z.all$type &lt;- as.factor(beta_pair_bin_Z.all$type)
+beta_pair_bin_Z.all$type = factor(beta_pair_bin_Z.all$type,levels(beta_pair_bin_Z.all$type)[c(2,3,1)])
+
+
+ggplot(beta_pair_bin_Z.all, aes(y=distance, x=type)) +
+  geom_boxplot(aes(fill=Carrier)) +
+  theme_bw() +
+  theme(axis.text = element_text(colour = &quot;black&quot;, size = 8),
+        axis.title = element_text(colour = &quot;black&quot;, size = 8),
+        legend.text = element_text(colour = &quot;black&quot;, size = 8),
+        legend.title = element_blank(),
+      strip.background = element_blank(),
+      #axis.text.x=element_blank(),
+      axis.title.x=element_blank(),
+      legend.position = &quot;none&quot;) +
+  scale_color_brewer(palette = &quot;Set1&quot;) +
+  labs(y=&quot;Pairwise diversity&quot;, fill=&quot;Carrier&quot;) +
+  scale_x_discrete(labels=c(expression(beta*&quot;sor&quot;), 
+                            expression(beta*&quot;sim&quot;), 
+                            expression(beta*&quot;sne&quot;))) +
+  #scale_x_discrete(&quot;Carrier type pairwise comparisons&quot;) +
+  scale_fill_brewer(palette = &quot;Set1&quot;, labels=c(&quot;within Z400&quot;, &quot;within Z50&quot;, &quot;between-group&quot;)) </code></pre>
+<p><img src="R_Beta_Diversity_plots_files/figure-html/Fig_3B-1.png" width="672" /></p>
+<p>Beta diversity ratio: <strong>Figure 3C</strong></p>
+<pre class="r"><code>beta_pair_bin_Z.com &lt;- dplyr::rename(beta_pair_bin_Z.sor, sorensen = distance) 
+beta_pair_bin_Z.com$nestedness &lt;- beta_pair_bin_Z.sne$distance
+beta_pair_bin_Z.com &lt;- beta_pair_bin_Z.com  %&gt;%
+  mutate(B.ratio = nestedness/sorensen)
+
+#Reorder levels
+#pairwise comparisons
+beta_pair_bin_Z.com$Carrier &lt;- as.factor(beta_pair_bin_Z.com$Carrier)
+beta_pair_bin_Z.com$Carrier = factor(beta_pair_bin_Z.com$Carrier,levels(beta_pair_bin_Z.com$Carrier)[c(2,1,3)])
+
+
+ggplot(beta_pair_bin_Z.com, aes(y=B.ratio, x=Carrier)) +
+  geom_boxplot(aes(fill=Carrier)) +
+  #geom_jitter(width = 0.25, height = 0, size=2, fill=&quot;white&quot;, alpha=0.5) +
+  theme_bw() +
+theme(axis.text = element_text(colour = &quot;black&quot;, size = 8),
+        axis.title = element_text(colour = &quot;black&quot;, size = 8),
+        legend.text = element_text(colour = &quot;black&quot;, size = 8),
+        legend.title = element_blank(),
+      strip.background = element_blank(),
+      axis.text.x=element_blank(),
+      axis.title.x=element_blank(),
+      legend.position = &quot;right&quot;) +
+  scale_fill_brewer(palette = &quot;Set1&quot;, labels=c(&quot;between-group&quot;, 
+                                               &quot;within Z400&quot;, 
+                                               &quot;within Z50&quot;)) +
+  labs(y= expression(beta*&quot;ratio&quot;), fill=&quot;Carrier&quot;)</code></pre>
+<p><img src="R_Beta_Diversity_plots_files/figure-html/Fig_3C-1.png" width="672" /></p>
+<div id="permanova" class="section level3">
+<h3>PERMANOVA</h3>
+<p>Sorensen</p>
+<pre class="r"><code>adonis(beta_pair_bin_Z$beta.sor ~ Carrier, metadata, perm=999)</code></pre>
+<pre><code>## 
+## Call:
+## adonis(formula = beta_pair_bin_Z$beta.sor ~ Carrier, data = metadata,      permutations = 999) 
+## 
+## Permutation: free
+## Number of permutations: 999
+## 
+## Terms added sequentially (first to last)
+## 
+##           Df SumsOfSqs MeanSqs F.Model      R2 Pr(&gt;F)    
+## Carrier    1   0.76548 0.76548  17.823 0.49753  0.001 ***
+## Residuals 18   0.77309 0.04295         0.50247           
+## Total     19   1.53858                 1.00000           
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Simpson</p>
+<pre class="r"><code>adonis(beta_pair_bin_Z$beta.sim ~ Carrier, metadata, perm=999)</code></pre>
+<pre><code>## 
+## Call:
+## adonis(formula = beta_pair_bin_Z$beta.sim ~ Carrier, data = metadata,      permutations = 999) 
+## 
+## Permutation: free
+## Number of permutations: 999
+## 
+## Terms added sequentially (first to last)
+## 
+##           Df SumsOfSqs  MeanSqs F.Model      R2 Pr(&gt;F)    
+## Carrier    1   0.30102 0.301020  9.1336 0.33661  0.001 ***
+## Residuals 18   0.59324 0.032958         0.66339           
+## Total     19   0.89426                  1.00000           
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Beta-diversity due to nestedness</p>
+<pre class="r"><code>adonis(beta_pair_bin_Z$beta.sne ~ Carrier, metadata, perm=999)</code></pre>
+<pre><code>## 
+## Call:
+## adonis(formula = beta_pair_bin_Z$beta.sne ~ Carrier, data = metadata,      permutations = 999) 
+## 
+## Permutation: free
+## Number of permutations: 999
+## 
+## Terms added sequentially (first to last)
+## 
+##           Df SumsOfSqs  MeanSqs F.Model      R2 Pr(&gt;F)    
+## Carrier    1  0.094826 0.094826  84.966 0.82519  0.001 ***
+## Residuals 18  0.020089 0.001116         0.17481           
+## Total     19  0.114915                  1.00000           
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</div>
+<div id="standarized-size-effect-of-beta-diversity" class="section level3">
+<h3>Standarized size effect of beta diversity</h3>
+<p>I use a model with fixed rows and columns (Fixed richness and incidence). the algorithm I use is quasiswap. This might not be the <em>best</em> null model, nor the <em>best</em> algorithm. It might be too conservative, and fixed-fixed models have some issues. Use with caution.</p>
+<p><strong>Important!</strong> To recreate the plots from Suarez et al (2019) use nsimul = 999</p>
+<pre class="r"><code>#Regional species pool
+sordist &lt;- function(x) vegdist(x, binary=TRUE)
+#quasiswap might be better than swap.
+#thin can reduce the bias of null models.
+
+#Use nsimul = 999
+z_null_sor &lt;- oecosimu(OTUS.vegan, sordist, method = &quot;quasiswap&quot;, nsimul = 9, thin=1000)</code></pre>
+<pre><code>## Warning in oecosimu(OTUS.vegan, sordist, method = &quot;quasiswap&quot;, nsimul =
+## 9, : nullmodel transformed &#39;comm&#39; to binary data</code></pre>
+<p>Using local species pool for within comparisons. Here I look at <strong>Z50</strong> carriers</p>
+<pre class="r"><code>d.z50 = subset_samples(d, Carrier==&quot;Z50&quot;)
+OTUS.vegan.z50 = veganotu(d.z50)
+z_null_sor.z50 &lt;- oecosimu(OTUS.vegan.z50, sordist, method = &quot;quasiswap&quot;, nsimul = 9, thin=1000)</code></pre>
+<pre><code>## Warning in oecosimu(OTUS.vegan.z50, sordist, method = &quot;quasiswap&quot;, nsimul =
+## 9, : nullmodel transformed &#39;comm&#39; to binary data</code></pre>
+<p>Using local species pool for within-group comparisons.Here I look at <strong>Z400</strong> carriers</p>
+<pre class="r"><code>d.z400 = subset_samples(d, Carrier==&quot;Z400&quot;)
+OTUS.vegan.z400 = veganotu(d.z400)
+z_null_sor.z400 &lt;- oecosimu(OTUS.vegan.z400, sordist, method = &quot;quasiswap&quot;, nsimul = 9, thin=1000)</code></pre>
+<pre><code>## Warning in oecosimu(OTUS.vegan.z400, sordist, method = &quot;quasiswap&quot;, nsimul
+## = 9, : nullmodel transformed &#39;comm&#39; to binary data</code></pre>
+<p>This is Figure 3A. With local species pool for within-group comparisons. Regional pool for between-group comparison</p>
+<pre class="r"><code>#I want the Z-values (SES)
+beta_pair_z_null_sor.z50 &lt;- DIST_TO_MATRIX(z_null_sor.z50$oecosimu$z, &quot;within Z50&quot;)
+beta_pair_z_null_sor.z400 &lt;- DIST_TO_MATRIX(z_null_sor.z400$oecosimu$z, &quot;within Z400&quot;)
+beta_pair_z_null_sor &lt;- DIST_TO_MATRIX(z_null_sor$oecosimu$z, &quot;between-group&quot;) %&gt;%
+  filter(Carrier == &quot;Z40_Z50&quot;)
+
+beta_pair_bin_Z.all &lt;- beta_pair_z_null_sor %&gt;%
+  bind_rows(beta_pair_z_null_sor.z50) %&gt;%
+  bind_rows(beta_pair_z_null_sor.z400)
+
+ggplot(beta_pair_bin_Z.all, aes(x=type, y=distance, fill=type)) +
+  geom_hline(yintercept = -2, color=&quot;black&quot;, linetype = 2) +
+  geom_hline(yintercept =  2, color=&quot;black&quot;, linetype = 2) +
+  geom_boxplot() +
+  theme_bw() +
+ theme(axis.text = element_text(colour = &quot;black&quot;, size = 8),
+        axis.title = element_text(colour = &quot;black&quot;, size = 8),
+        legend.text = element_text(colour = &quot;black&quot;, size = 8),
+        legend.title = element_blank(),
+      strip.background = element_blank(),
+      axis.text.x=element_blank(),
+      axis.title.x=element_blank(),
+      legend.position = &quot;right&quot;) +
+  labs(y=&quot;Standardized effect size S?rensen&quot;, fill=&quot;type&quot;) +
+  scale_fill_brewer(palette = &quot;Set1&quot;)</code></pre>
+<p><img src="R_Beta_Diversity_plots_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+</div>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
